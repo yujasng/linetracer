@@ -16,12 +16,19 @@ uint16_t adc_read(uint8_t adcx);
 int main(void){
 
     ADCSRA |= _BV(ADEN);    // enable adc
+    ADMUX |= _BV(REFS0);    // set V_ref to 5V
+
+    //set adc prescaler selection division factor as 128
+    ADCSRA |= _BV(ADPS2) | _BV(ADPS1) | _BV(ADPS0);
+    
+
 
     DDRD |= _BV(L_motor);    // port d motor pins as output
     DDRD |= _BV(R_motor);
     
 
     for(;;){
+
 
 
         if(adc_read(ADC_LEFT) > ADC_THRESHOLD){
