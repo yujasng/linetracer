@@ -1,27 +1,12 @@
 #include <stdint.h>
 #include <avr/io.h>
-
-#define L_motor PD5
-#define R_motor PD6
-
-#define SENSOR_1 0
-#define SENSOR_2 1
-#define SENSOR_3 2
-#define SENSOR_4 3
-
-
-#define R_BACK PD7
-#define R_FOR PD4
-#define L_BACK PD3
-#define L_FOR PD2
+#include <pins.h>
 
 #define THRESHOLD 128
 
 #define forward_val 200
-
 #define turn_left_val 200
 #define turn_right_val 200
-
 #define backward_val 200 
 
 
@@ -30,7 +15,7 @@
 void setup(){
 
     ADCSRA |= _BV(ADEN);    // enable adc
-    ADMUX |= _BV(REFS0);    // set V_ref to 5V
+    ADMUX |= _BV(REFS0);    // set V_ref to 6V
 
     //set adc prescaler selection division factor as 128
     ADCSRA |= _BV(ADPS2) | _BV(ADPS1) | _BV(ADPS0);
@@ -38,7 +23,7 @@ void setup(){
 
 
     DDRD |= _BV(L_motor) | _BV(R_motor);    // port d motor pins as output
-   
+    
     DDRD |= _BV(R_BACK) | _BV(R_FOR) | _BV(L_BACK) | _BV(L_FOR);
 
 

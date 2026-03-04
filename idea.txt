@@ -1,0 +1,53 @@
+line tracer  
+
+4 IR sensors front
+ - how to put on track?
+ 
+ 일단 만들 것 : going forward 
+  - how? PI control!
+  
+  set point :
+  case1)
+  			 middle two sensors ) on track
+  				outer two sensors) out of track
+  			-- have to set the track thicker than the length btw sensors			
+ or....		
+ 
+ case2 ) 
+ 		middle two sensors & outer two sensors all out of track
+  -> sense whether the sensors are sensing track, and move proportionaly(?) of how much track is detected 
+  
+  -> but proportionally...? hmmm.... doesn't make sense
+
+
+---------------------------------------------------------
+
+The motion we want the device to have : wobble! 
+
+line: about 1.5 ~ 2cm 
+
+Calibration - normalization ( brightest, darkest value 비교 후 0~100로 normalize)
+
+give each sensor weight (-30 -10 +10 +30) 
+-> make a setpoint!
+-> PI control 
+->  give motor value 
+
+
+at setpoint : go front
+when + -> turn left
+when - -> turn right
+
+motor +- value should be determined by the error
+
+
+근데 생각해 보니까 계속 normalization하려면 min, max 받아서 해야하자나
+ - 그러면 min, max return 하고 normalization 계속 하는 코드를 짜야 되네 
+ 
+ calibration -> min, max 계산 -> setpoint 설정 -> sensor val normalization -> error 계산 -> motor val -> norm 된 sensor val 계산 -> error 
+  
+--------------------------------------
+type의 structure
+우리가 저장해야 하는 것 : 4개의 sensor value, min, max 
+근데 사실 min, max는 따로 넣어도 되네
+ 

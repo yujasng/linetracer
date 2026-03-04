@@ -7,18 +7,21 @@
 #define LED_PIN PB0  
 
 // L298N Control Pins
-#define MOT_ENA_PIN PD5
-#define MOT_IN1_PIN PD2
-#define MOT_IN2_PIN PD3
+#define L_motor PD5
+#define L_FOR  PD2
+#define L_BACK PD3
 
-#define MOT_ENB_PIN PD6
-#define MOT_IN3_PIN PD4
-#define MOT_IN4_PIN PD7
+#define R_motor PD6
+#define R_FOR PD4
+#define R_BACK PD7
 
 // IR Reflectance Sensor Pins
-#define SENS1_PIN PC0
-#define SENS2_PIN PC1
-#define SENS3_PIN PC2
-#define SENS4_PIN PC3
+#define SENSOR_1 PC0
+#define SENSOR_2 PC1
+#define SENSOR_3 PC2
+#define SENSOR_4 PC3
+
+#define SENSOR [4] = [SENSOR_1, SENSOR_2,SENSOR_3,SENSOR_4]
+
 
 #endif
