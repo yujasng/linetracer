@@ -90,7 +90,7 @@ norm calibration(sens* sensor){
 }
 
 // Initializing PI control related values
-void PI_Init(PIDController *pid, uint16_t Kp, uint16_t Ki, uint16_t Kd, uint16_t setpoint){
+void PI_Init(PIDController *pid, uint16_t Kp, uint16_t Ki, uint16_t setpoint){
 
     pid -> Kp = Kp;
     pid -> Ki = Ki;
@@ -101,24 +101,55 @@ void PI_Init(PIDController *pid, uint16_t Kp, uint16_t Ki, uint16_t Kd, uint16_t
 }
 
 
-uint16_t PI_Compute(PIDController *pid, uint16_t current_value, uint16_t dt){
-    uint16_t error = pid -> setpoint - current_value;
-    pid -> integral += error * dt;
-    uint16_t derivative = (error - pid -> prev_error) / dt;
+uint16_t PI_Compute(PIDController *pi, uint16_t current_value, uint16_t dt){
+    uint16_t error = pi -> setpoint - current_value;
+    pi -> integral += error * dt;
+    uint16_t derivative = (error - pi -> prev_error) / dt;
 
-    uint16_t output = (pid -> Kp * error) + (pid -> Ki * pid -> integral);
-    pid -> prev_error = error;
+    uint16_t output = (pi -> Kp * error) + (pi -> Ki * pi -> integral);
+    pi -> prev_error = error;
 
     return output;
 }
 
 void run_Lmotor(uint16_t error){
-    if(error > 0){
+    if(error >= 0){  //when have to go left
 
+        PORTD |= _BV(L_FOR);
+        PORTD &= ~_BV(L_BACK);
+
+        return;
     }
+    else{   // when have to go right
+
+        PORTD &= ~_BV(L_FOR);
+        PORTD |= _BV(L_BACK);
+        
+        return;
+    
+    }
+
 }
 
 void run_Rmotor(uint16_t error){
+    if(error > 0){  //when have to go left
+
+        PORTD &= ~_BV(R_FOR);
+        PORTD |= _BV(R_BACK);
+
+        return;
+    }
+    else{   // when have to go right
+
+        PORTD |= _BV(R_FOR);
+        PORTD &= ~_BV(R_BACK);
+        
+        return;
+    
+    }
+
+
+
 
 }
 
@@ -160,19 +191,18 @@ int main(){
         pi.setpoint += sensor[i].norm_sensorVal * sensor[i].weight;
     }    
 
-    uint16_t Kp = ;
-    uint16_t Ki = ;
-    uint16_t Kd = ;
-    uint16_t dt = ;
+    uint16_t Kp = 10;
+    uint16_t Ki = 10;
+    uint16_t dt = 1;
 
-    PI_Init(&pi, Kp, Ki, Kd, pi.setpoint);
+    PI_Init(&pi, Kp, Ki, pi.setpoint );
 
     for(;;){
         uint16_t current_Value = 0 ;
         
         for(uint8_t i = 0; i<4; i++){
             sensor[i].sensorVal = adc_read(SENSOR[i]);
-            sensor[i].norm_sensorVal = normalization(standard, sensor+i);
+            normalization(standard, sensor+i);
             current_Value += sensor[i].norm_sensorVal * sensor[i].weight;
         }
 
@@ -180,11 +210,13 @@ int main(){
         uint16_t result = PI_Compute(&pi, current_Value, dt);
         uint16_t error = result - pi.setpoint;
 
-        // error > 0 -> line tracer is too 
-        
+        // error > 0 -> line tracer is too on the right - have to go left 
+        // error < 0 -> linetracer is too left  - have to go right
         run_Lmotor(error);
         run_Rmotor(error);
 
+        OCR0A = error*0.1;
+        OCR0B = error*0.1;
 
     }
 
