@@ -21,7 +21,5 @@
 #define SENSOR_3 PC2
 #define SENSOR_4 PC3
 
-#define SENSOR [4] = {SENSOR_1, SENSOR_2,SENSOR_3,SENSOR_4}
-
 
 #endif
