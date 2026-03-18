@@ -185,7 +185,7 @@ int main(){
     }    
 
     uint16_t Kp = 10;
-    uint16_t Ki = 10;
+    uint16_t Ki = 5;
     uint16_t dt = 1;
 
     PI_Init(&pi, Kp, Ki, pi.setpoint );
